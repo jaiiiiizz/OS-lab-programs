@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <string.h>
+
+struct msg {
+    long type;
+    char text[100];
+};
+
+int main() {
+    struct msg message;
+
+    int msgid = msgget(1234, 0666 | IPC_CREAT);
+
+    message.type = 1;
+
+    printf("Enter message: ");
+    scanf(" %[^\n]", message.text);
+
+    msgsnd(msgid, &message, sizeof(message.text), 0);
+
+    msgrcv(msgid, &message, sizeof(message.text), 1, 0);
+
+    printf("Received Message: %s\n", message.text);
+
+    return 0;
+}
